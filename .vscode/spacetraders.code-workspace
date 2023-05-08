@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "..",
+			"name": "spacetraders_root"
+		},
+		{
+			"path": "../apps/backend",
+			"name": "backend"
+		},
+		{
+			"path": "../apps/frontend",
+			"name": "frontend"
+		}
+	],
+	"settings": {}
+}
