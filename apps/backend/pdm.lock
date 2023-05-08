@@ -365,7 +365,7 @@ summary = "HTTP library with thread-safe connection pooling, file post, and more
 
 [metadata]
 lock_version = "4.2"
-groups = ["default", "ci", "dev"]
+groups = ["default", "dev"]
 content_hash = "sha256:dfbaf86f70062904f371460e25ac635796ad812af80a71745b5ea803f963aefa"
 
 [metadata.files]
