@@ -8,8 +8,9 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 # from util.log.logger import get_logger
 # log = get_logger(logger="dev")
-from core.constants import default_req_cache_dir
+from util.constants import default_req_cache_dir
 import requests_cache
+
 
 def get_req_session(
     cache_dir: str = default_req_cache_dir,
