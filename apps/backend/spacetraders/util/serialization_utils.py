@@ -51,33 +51,3 @@ def msgpack_serialize(_json: dict = None, filename: str = None) -> dict[str, Uni
             return_obj = {"success": False, "detail": {"message": f"{exc}"}}
             
     return return_obj
-
-
-def parquet_serialize(_json: dict = None, filename: str = None) -> dict:
-    
-    if not _json:
-        raise ValueError("Missing Python dict data to serialize")
-    
-    if not filename:
-        log.debug(f"Missing filename. Generating a random filename.")
-        
-        filename = str(uuid4())
-        
-    if not validate_serialization_filetype(filename=filename):
-        raise ValueError(f"Invalid filetype")
-        
-    if Path(filename).suffix:
-        filename.replace(Path(filename).suffix, "")
-    
-    df = pd.DataFrame(_json)
-    
-    data_table = pa.Table.from_pandas(df)
-    
-    filename = f"{default_serialize_dir}/{filename}.parquet"
-    
-    try:
-        pq.write_table(data_table, filename)
-        # with open(filename, "w+") as _out:
-        #     pq.write_table(data_table, _out)
-    except Exception as exc:
-        raise Exception(f"Unhandled exception writing table to Parquet file. Exception detail: {exc}")
