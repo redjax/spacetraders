@@ -10,6 +10,7 @@ log = get_logger(__name__, level=logging_settings.LOG_LEVEL)
 default_req_cache_dir = ".cache"
 default_serialize_dir = ".serialize"
 
+
 endpoint_register = "/register"
 
 base_url = api_settings.BASE_URL

@@ -26,7 +26,7 @@ from util.constants import (
 )
 from util.request_utils import get_req_session
 from util.validators import validate_username
-from util.serialization_utils import msgpack_serialize
+from util.serialization_utils import msgpack_serialize, parquet_serialize
 
 session = get_req_session(session_name="spacetraders_testing", allowable_codes=[200])
 
@@ -64,7 +64,8 @@ async def ex_register_rand_agent() -> JSONResponse:
 
         _json = res.json()
         
-        serialize = msgpack_serialize(_json=_json, filename=agent_name)
+        # serialize = msgpack_serialize(_json=_json, filename=agent_name)
+        serialize = parquet_serialize(_json=_json, filename=agent_name)
         log.debug(f"Serialize results: {serialize}")
 
         # if _json:
