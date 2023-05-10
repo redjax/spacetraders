@@ -51,5 +51,6 @@ class LoggingSetting(BaseSettings):
         env_file = f"{THIS_DIR}/env_files/logging.env"
 
 
+api_settings = APISettings()
 app_settings = AppSettings()
 logging_settings = LoggingSetting()
