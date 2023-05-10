@@ -24,6 +24,8 @@ dependencies = [
     "arrow>=1.2.3",
     "msgpack>=1.0.5",
     "trio>=0.22.0",
+    "uvicorn>=0.22.0",
+    "fastapi>=0.95.1",
 ]
 requires-python = ">=3.10"
 license = {text = "MIT"}
@@ -44,4 +46,5 @@ export-dev = { cmd = "pdm export -d -o requirements.dev.txt --without-hashes" }
 export-ci = { cmd = "pdm export -G ci -o requirements.ci.txt --without-hashes" }
 
 start = { shell = "cd spacetraders && python main.py" }
+start-server = { shell = "cd spacetraders && python start_server.py" }
 # benchmark-requests = { shell = "cd app && python compare_sync_async.py" }
