@@ -4,6 +4,7 @@ stackprinter.set_excepthook(style="darkbg2")
 
 from pathlib import Path
 
+
 from core.config import app_settings, api_settings, logging_settings
 from util.constants import (
     default_req_cache_dir,
@@ -12,6 +13,16 @@ from util.constants import (
     default_api_str,
     tags_metadata,
 )
+from util.logging.logger import get_logger
+
+log = get_logger(__name__, level=logging_settings.LOG_LEVEL)
+
+mkdirs = [default_serialize_dir, default_req_cache_dir]
+
+for _p in mkdirs:
+    if not Path(_p).exists():
+        log.debug(f"Creating path: {_p}")
+        Path(_p).mkdir(parents=True, exist_ok=True)
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles

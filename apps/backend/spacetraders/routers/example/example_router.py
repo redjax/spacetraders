@@ -1,4 +1,5 @@
 import json
+import msgpack
 from uuid import UUID, uuid4
 from typing import Any, Optional, Union
 
@@ -58,15 +59,25 @@ async def ex_register_rand_agent() -> JSONResponse:
         ok = res.ok
         reason = res.reason
 
-        # _json = res.json()
+        _json = res.json()
+
+        if _json:
+            try:
+                with open(
+                    f"{default_serialize_dir}/{agent_name}.msgpack", "wb"
+                ) as outfile:
+                    packed = msgpack.packb(_json)
+                    outfile.write(packed)
+            except Exception as exc:
+                raise Exception(f"Unhandled exception writing msgpack. Detail: {exc}")
 
         log.debug(f"[{status_code}: {reason}] Response from {res.url}")
         log.debug(f"Response text type({type(res.text)}): {res.text}")
 
         if status_code in [200, 201]:
-            return JSONResponse(status_code=status.HTTP_201_CREATED, content=res.json())
+            return JSONResponse(status_code=status.HTTP_201_CREATED, content=_json)
         else:
-            return JSONResponse(status_code=res.status_code, content=res.json())
+            return JSONResponse(status_code=res.status_code, content=_json)
 
 
 @router.get("register/{agent_name}")
@@ -103,12 +114,22 @@ async def ex_register_agent(agent_name: Optional[str] = None) -> JSONResponse:
         log.debug(f"[{res.url}] [{res.status_code}: {res.reason}]")
         log.debug(f"Results ({type(res)}): {res.text}")
 
-        # _json = res.json()
+        _json = res.json()
+
+        if _json:
+            try:
+                with open(
+                    f"{default_serialize_dir}/{agent_name}.msgpack", "wb"
+                ) as outfile:
+                    packed = msgpack.packb(_json)
+                    outfile.write(packed)
+            except Exception as exc:
+                raise Exception(f"Unhandled exception writing msgpack. Detail: {exc}")
 
         log.debug(f"[{status_code}: {reason}] Response from {res.url}")
         log.debug(f"Response text type({type(res.text)}): {res.text}")
 
         if status_code in [200, 201]:
-            return JSONResponse(status_code=status.HTTP_201_CREATED, content=res.json())
+            return JSONResponse(status_code=status.HTTP_201_CREATED, content=_json)
         else:
-            return JSONResponse(status_code=res.status_code, content=res.json())
+            return JSONResponse(status_code=res.status_code, content=_json)

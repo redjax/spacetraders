@@ -9,6 +9,7 @@ log.debug(f"App Settings: {app_settings}")
 
 from datetime import timedelta
 import json
+import msgpack
 
 from uuid import UUID, uuid4
 
