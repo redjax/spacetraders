@@ -85,6 +85,8 @@ async def ex_register_rand_agent() -> JSONResponse:
 @router.get("register/{agent_name}")
 async def ex_register_agent(agent_name: Optional[str] = None) -> JSONResponse:
     """Make request to Startrader API, register agent_name."""
+    log.debug(f"Agent name: {agent_name}")
+
     if not agent_name:
         log.debug("No agent name passed.")
         # agent_name = validate_username(username=str(uuid4()))
@@ -100,7 +102,6 @@ async def ex_register_agent(agent_name: Optional[str] = None) -> JSONResponse:
     log.info("Opening request session")
     with session:
         ## must be 14 chars
-        agent_name = validate_username(username=str(uuid4()))
         log.debug(f"Len agent_name: {len(agent_name)}")
 
         params = {"symbol": f"{agent_name}", "faction": "COSMIC"}
@@ -114,7 +115,7 @@ async def ex_register_agent(agent_name: Optional[str] = None) -> JSONResponse:
         reason = res.reason
 
         log.debug(f"[{res.url}] [{res.status_code}: {res.reason}]")
-        log.debug(f"Results ({type(res)}): {res.text}")
+        # log.debug(f"Results ({type(res)}): {res.text}")
 
         _json = res.json()
 
