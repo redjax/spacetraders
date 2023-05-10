@@ -1,27 +1,29 @@
-import json
-import msgpack
-from uuid import UUID, uuid4
-from typing import Any, Optional, Union
+from __future__ import annotations
 
-from core.config import app_settings, api_settings, logging_settings
+import json
+
+from typing import Any, Optional, Union
+from uuid import UUID, uuid4
+
+from core.config import api_settings, app_settings, logging_settings
+import msgpack
+
 from util.logging.logger import get_logger
 
 log = get_logger(__name__, level=logging_settings.LOG_LEVEL)
 
-from util.constants import (
-    default_api_str,
-    default_serialize_dir,
-    default_req_cache_dir,
-    tags_metadata,
-    update_tags_metadata,
-    register_url,
-    base_headers,
-)
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-
+from util.constants import (
+    base_headers,
+    default_api_str,
+    default_req_cache_dir,
+    default_serialize_dir,
+    register_url,
+    tags_metadata,
+    update_tags_metadata,
+)
 from util.request_utils import get_req_session
 from util.validators import validate_username
 
@@ -82,7 +84,7 @@ async def ex_register_rand_agent() -> JSONResponse:
 
 @router.get("register/{agent_name}")
 async def ex_register_agent(agent_name: Optional[str] = None) -> JSONResponse:
-    """Make request to Startrader API, register agent_name"""
+    """Make request to Startrader API, register agent_name."""
     if not agent_name:
         log.debug("No agent name passed.")
         # agent_name = validate_username(username=str(uuid4()))

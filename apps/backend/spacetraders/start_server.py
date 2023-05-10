@@ -9,7 +9,6 @@ from pathlib import Path
 from pydantic import BaseModel
 import uvicorn
 
-
 class UvicornCustomServer(BaseModel):
     """Customize a Uvicorn server by passing a dict
     to UvicornCustomServer.parse_obj(dict).

@@ -4,11 +4,11 @@ sub-routers.
 """
 from __future__ import annotations
 
-from util.constants import default_api_str, tags_metadata
 from fastapi import APIRouter, Depends, HTTPException
 
 ## Import sub-routers
 from routers.example import example_router
+from util.constants import default_api_str, tags_metadata
 
 router = APIRouter(responses={404: {"description": "Not found"}})
 

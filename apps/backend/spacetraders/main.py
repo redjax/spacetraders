@@ -1,16 +1,17 @@
+from __future__ import annotations
+
 import stackprinter
 
 stackprinter.set_excepthook(style="darkbg2")
 
 from pathlib import Path
 
-
-from core.config import app_settings, api_settings, logging_settings
+from core.config import api_settings, app_settings, logging_settings
 from util.constants import (
+    default_api_str,
+    default_openapi_url,
     default_req_cache_dir,
     default_serialize_dir,
-    default_openapi_url,
-    default_api_str,
     tags_metadata,
 )
 from util.logging.logger import get_logger
@@ -26,9 +27,7 @@ for _p in mkdirs:
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-
 from routers import api_router
-
 from util.api import healthcheck
 
 app = FastAPI(
