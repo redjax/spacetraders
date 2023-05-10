@@ -25,8 +25,8 @@ from util.constants import (
     update_tags_metadata,
 )
 from util.request_utils import get_req_session
-from util.validators import validate_username
 from util.serialization_utils import msgpack_serialize
+from util.validators import validate_username
 
 session = get_req_session(session_name="spacetraders_testing", allowable_codes=[200])
 
@@ -63,19 +63,9 @@ async def ex_register_rand_agent() -> JSONResponse:
         reason = res.reason
 
         _json = res.json()
-        
+
         serialize = msgpack_serialize(_json=_json, filename=agent_name)
         log.debug(f"Serialize results: {serialize}")
-
-        # if _json:
-        #     try:
-        #         with open(
-        #             f"{default_serialize_dir}/{agent_name}.msgpack", "wb"
-        #         ) as outfile:
-        #             packed = msgpack.packb(_json)
-        #             outfile.write(packed)
-        #     except Exception as exc:
-        #         raise Exception(f"Unhandled exception writing msgpack. Detail: {exc}")
 
         log.debug(f"[{status_code}: {reason}] Response from {res.url}")
         log.debug(f"Response text type({type(res.text)}): {res.text}")
@@ -122,16 +112,6 @@ async def ex_register_agent(agent_name: Optional[str] = None) -> JSONResponse:
         # log.debug(f"Results ({type(res)}): {res.text}")
 
         _json = res.json()
-
-        # if _json:
-        #     try:
-        #         with open(
-        #             f"{default_serialize_dir}/{agent_name}.msgpack", "wb"
-        #         ) as outfile:
-        #             packed = msgpack.packb(_json)
-        #             outfile.write(packed)
-        #     except Exception as exc:
-        #         raise Exception(f"Unhandled exception writing msgpack. Detail: {exc}")
 
         log.debug(f"[{status_code}: {reason}] Response from {res.url}")
         log.debug(f"Response text type({type(res.text)}): {res.text}")

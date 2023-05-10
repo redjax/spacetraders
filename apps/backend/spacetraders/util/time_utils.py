@@ -9,6 +9,7 @@ from typing import Union
 
 import arrow
 
+
 def ts_today() -> arrow.Arrow:
     return arrow.now()
 

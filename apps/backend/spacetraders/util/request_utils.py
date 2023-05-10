@@ -13,6 +13,7 @@ import requests_cache
 # log = get_logger(logger="dev")
 from util.constants import default_req_cache_dir
 
+
 def get_req_session(
     cache_dir: str = default_req_cache_dir,
     session_name: str = "default_req_cache",
