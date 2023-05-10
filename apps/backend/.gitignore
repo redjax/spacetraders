@@ -128,6 +128,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# Serial objects
+.serialize
+**/*.msgpack
+
 # Spyder project settings
 .spyderproject
 .spyproject
