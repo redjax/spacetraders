@@ -1,78 +1,53 @@
-from __future__ import annotations
+import stackprinter
 
-from core.config import app_settings, logging_settings
-from util.logging.logger import get_logger
+stackprinter.set_excepthook(style="darkbg2")
 
+from pathlib import Path
 
-log = get_logger(__name__, level=logging_settings.LOG_LEVEL)
-
-log.debug(f"App Settings: {app_settings}")
-
-import json
-from datetime import timedelta
-
-from pydantic import create_model
-
-from requests_cache import CachedRequest, CachedResponse, CachedHTTPResponse
+from core.config import app_settings, api_settings, logging_settings
 from util.constants import (
-    base_url,
-    endpoint_register,
     default_req_cache_dir,
-    register_url,
+    default_serialize_dir,
+    default_openapi_url,
+    default_api_str,
+    tags_metadata,
 )
 
-from uuid import UUID, uuid4
-from util.request_utils import get_req_session
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
-with open("example_response.json", "r+") as f:
-    res = json.loads(f.read())
+from routers import api_router
 
-# log.debug(f"Test res ({type(res)}): {res}")
+from util.api import healthcheck
 
-## Create an undefined Pydantic model from JSON
-test = create_model("User", **res)
+app = FastAPI(
+    root_path="/",
+    title=app_settings.APP_TITLE or "DEFAULT_TITLE",
+    description=app_settings.APP_DESCRIPTION or "DEFAULT_DESCRIPTION",
+    version=app_settings.APP_VERSION or "0.0.0",
+    openapi_url=default_openapi_url,
+    openapi_tags=tags_metadata,
+)
 
-# log.debug(f"Test ({type(test)}): {test}")
+## Include APIRouters
+#  ex: app.include_router(some_route.router)
+app.include_router(api_router.router)
+app.include_router(healthcheck.router)
 
-# log.debug(f"Schema: {test.schema()}")
+## Include sub-apps
+#  ex: app.mount("/endpoint", app_name)
 
-headers = {"Content-Type": "application/json"}
+## Include other mounts
 
-session = get_req_session(session_name="spacetraders_testing", allowable_codes=[200])
-log.debug(f"Session: {session}")
+## Mount static dir, if exists
+if Path("./static/").exists():
+    print(f"[DEBUG] Path [static/] found. Mounting to app.")
 
-
-def validate_username(username: str = None) -> bool:
-    agent_name_limit: int = 14
-
-    if not username:
-        raise ValueError("Missing username value.")
-
-    if not isinstance(username, str):
-        raise ValueError("username must be a string.")
-
-    if len(username) > agent_name_limit:
-        username_trim = username[:14]
-
-        return username_trim
+    ## https://fastapi.tiangolo.com/tutorial/static-files/
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-with session:
-    ## must be 14 chars
-    agent_name = validate_username(username=str(uuid4()))
-    log.debug(f"Len agent_name: {len(agent_name)}")
-
-    params = {"symbol": f"{agent_name}", "faction": "COSMIC"}
-
-    log.debug(f"Requesting {register_url}, params: {params}")
-    res = session.post(url=register_url, json=params, headers=headers)
-
-    status_code = res.status_code
-    cached = res.from_cache
-    ok = res.ok
-    reason = res.reason
-
-    # _json = res.json()
-
-    log.debug(f"[{status_code}: {reason}] Response from {res.url}")
-    log.debug(f"Response text: {res.text}")
+@app.get("/")
+async def hello_world() -> dict[str, str]:
+    """Index page of root app."""
+    return {"message": "Hello world."}
