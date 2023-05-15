@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 from typing import Optional, Union
 from uuid import UUID, uuid4
@@ -16,7 +17,9 @@ log = get_logger(__name__, level=logging_settings.LOG_LEVEL)
 from util.constants import default_serialize_dir
 
 
-def msgpack_serialize(_json: dict = None, filename: str = None):
+def msgpack_serialize(
+    _json: dict = None, filename: str = None
+) -> dict[str, Union[bool, str, dict[str, Union[str, dict]]]]:
     if not _json:
         raise ValueError("Missing Python dict data to serialize")
 
@@ -51,7 +54,9 @@ def msgpack_serialize(_json: dict = None, filename: str = None):
     return return_obj
 
 
-def msgpack_deserialize(filename: str = None):
+def msgpack_deserialize(
+    filename: str = None,
+) -> dict[str, Union[bool, str, dict[str, Union[str, dict]]]]:
     if not filename:
         raise ValueError("Must pass a file name/path to deserialize")
 
@@ -67,7 +72,7 @@ def msgpack_deserialize(filename: str = None):
             "success": True,
             "detail": {
                 "message": f"Data deserialized from file {filename}",
-                "data": unpacked,
+                "unpacked": unpacked,
             },
         }
 
