@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 from typing import Optional, Union
 from uuid import UUID, uuid4
@@ -31,7 +32,7 @@ def msgpack_serialize(_json: dict = None, filename: str = None):
 
     if _json:
         try:
-            with open(f"{filename}.msgpack", "wb") as outfile:
+            with open(f"{filename}", "wb") as outfile:
                 packed = msgpack.packb(_json)
                 outfile.write(packed)
 
@@ -46,5 +47,33 @@ def msgpack_serialize(_json: dict = None, filename: str = None):
             )
 
             return_obj = {"success": False, "detail": {"message": f"{exc}"}}
+
+    return return_obj
+
+
+def msgpack_deserialize(filename: str = None):
+    if not filename:
+        raise ValueError("Must pass a file name/path to deserialize")
+
+    if not Path(filename).exists():
+        raise FileNotFoundError(f"Could not find file: {filename}")
+
+    try:
+        with open(f"{filename}", "rb") as infile:
+            in_bytes = infile.read()
+            unpacked = msgpack.unpackb(in_bytes)
+
+        return_obj = {
+            "success": True,
+            "detail": {
+                "message": f"Data deserialized from file {filename}",
+                "data": unpacked,
+            },
+        }
+
+    except Exception as exc:
+        log.error({"exception": "Unhandled exception reading msgpack."}, exc_info=True)
+
+        return_obj = {"success": False, "detail": {"message": f"{exc}"}}
 
     return return_obj

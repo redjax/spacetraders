@@ -5,6 +5,8 @@ import json
 from typing import Any, Optional, Union
 from uuid import UUID, uuid4
 
+from pathlib import Path
+
 from core.config import api_settings, app_settings, logging_settings
 import msgpack
 
@@ -25,7 +27,7 @@ from util.constants import (
     update_tags_metadata,
 )
 from util.request_utils import get_req_session
-from util.serialization_utils import msgpack_serialize
+from util.serialization_utils import msgpack_serialize, msgpack_deserialize
 from util.validators import validate_username
 
 session = get_req_session(session_name="spacetraders_testing", allowable_codes=[200])
@@ -64,7 +66,7 @@ async def ex_register_rand_agent() -> JSONResponse:
 
         _json = res.json()
 
-        serialize = msgpack_serialize(_json=_json, filename=agent_name)
+        serialize = msgpack_serialize(_json=_json, filename=f"agent_{agent_name}")
         log.debug(f"Serialize results: {serialize}")
 
         log.debug(f"[{status_code}: {reason}] Response from {res.url}")
@@ -120,3 +122,33 @@ async def ex_register_agent(agent_name: Optional[str] = None) -> JSONResponse:
             return JSONResponse(status_code=status.HTTP_201_CREATED, content=_json)
         else:
             return JSONResponse(status_code=res.status_code, content=_json)
+
+
+@router.get("/serial/all")
+async def get_all_serialized() -> list[str]:
+    all_serialized: list[str] = []
+
+    if not Path(default_serialize_dir).exists():
+        raise FileNotFoundError(
+            f"Serialize dir does not exist: {default_serialize_dir}"
+        )
+
+    for _f in Path(default_serialize_dir).glob("**/*"):
+        if _f.is_file():
+            if _f.suffix == ".msgpack":
+                all_serialized.append(str(_f.name))
+
+    return all_serialized
+
+
+@router.get("/serial/load/{serial_name}")
+async def get_serialized(serial_name: str = None):
+    log.debug(f"Loading serial object: {serial_name}")
+    check_file = f"{default_serialize_dir}/{serial_name}"
+
+    if not Path(check_file).exists():
+        raise FileNotFoundError(f"Serial object not found: {check_file}")
+
+    _data = msgpack_deserialize(filename=check_file)
+
+    return _data
