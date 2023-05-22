@@ -1,0 +1,38 @@
+version: "3"
+
+# networks:
+#   spacetrader_net:
+
+services:
+
+  backend:
+    container_name: ${BACKEND_CONTAINER_NAME:-spacetraders-backend}
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfiles/Dockerfile
+    working_dir: /project
+    volumes:
+      - ./apps/backend/spacetraders:/project/src
+    environment:
+      BASE_URL: ${BACKEND_BASE_URL:-https://api.spacetraders.io/v2}
+      # API_KEY: 
+      APP_TITLE: ${BACKEND_APP_TITLE:-SpaceTraders - Backend}
+      APP_DESCRIPTION: ${BACKEND_APP_DESCRIPTION:-Interact with the SpaceTraders API}
+      APP_VERSION: ${BACKEND_APP_VERSION:-0.1}
+      LOG_LEVEL: ${BACKEND_LOG_LEVEL:-INFO}
+    ports:
+      - 8122:8000
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:8000/health",
+          "||",
+          "exit 1"
+        ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s

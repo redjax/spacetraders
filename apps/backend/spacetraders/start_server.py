@@ -48,9 +48,14 @@ prod_server = UvicornCustomServer()
 
 
 if __name__ == "__main__":
-    print(f"[DEBUG] Uvicorn config: {dev_server}")
+    # print(f"[DEBUG] Uvicorn config: {dev_server}")
+    print(f"[DEBUG] Uvicorn config: {prod_server}")
 
+    # print(
+    #     f"[DEBUG] Starting Uvicorn server, serving app {dev_server.app} on port {dev_server.port}"
+    # )
     print(
-        f"[DEBUG] Starting Uvicorn server, serving app {dev_server.app} on port {dev_server.port}"
+        f"[DEBUG] Starting Uvicorn server, serving app {prod_server.app} on port {prod_server.port}"
     )
-    dev_server.run_server()
+    # dev_server.run_server()
+    prod_server.run_server()
