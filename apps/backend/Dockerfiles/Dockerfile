@@ -12,6 +12,10 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100
 
+## Install CURL for healthcheck
+RUN apt-get update -y && \
+    apt-get install -y curl
+
 ## Install pdm
 RUN pip install -U pip setuptools wheel
 RUN pip install pdm
@@ -40,4 +44,4 @@ EXPOSE 8000
 
 WORKDIR /project
 
-CMD ["pdm", "run", "start-server"]
+ENTRYPOINT ["pdm", "run", "start-server"]
